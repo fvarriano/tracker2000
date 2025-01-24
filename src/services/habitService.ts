@@ -1,4 +1,4 @@
-import { collection, addDoc, deleteDoc, doc, updateDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { collection, addDoc, deleteDoc, doc, updateDoc, onSnapshot, query, orderBy, where } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { Habit } from '../types';
 
@@ -6,9 +6,10 @@ const HABITS_COLLECTION = 'habits';
 
 export const habitService = {
   // Subscribe to habits (real-time updates)
-  subscribeToHabits: (onUpdate: (habits: Habit[]) => void) => {
+  subscribeToHabits: (onUpdate: (habits: Habit[]) => void, userId: string) => {
     const habitsQuery = query(
       collection(db, HABITS_COLLECTION),
+      where('userId', '==', userId),
       orderBy('createdAt', 'desc')
     );
 

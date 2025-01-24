@@ -3,6 +3,7 @@ export interface Habit {
   name: string;
   createdAt: Date;
   completedDates: string[]; // Array of ISO date strings
+  userId: string;
 }
 
 export interface HabitLog {

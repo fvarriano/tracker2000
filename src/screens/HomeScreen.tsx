@@ -12,22 +12,26 @@ import {
 import { Habit } from '../types';
 import { HabitItem } from '../components/HabitItem';
 import { habitService } from '../services/habitService';
+import { useAuth } from '../contexts/AuthContext';
 
 export const HomeScreen: React.FC = () => {
+  const { user, logout } = useAuth();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [newHabitName, setNewHabitName] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Subscribe to habits
+    if (!user) return;
+
+    // Subscribe to habits for the current user
     const unsubscribe = habitService.subscribeToHabits((updatedHabits) => {
       setHabits(updatedHabits);
       setLoading(false);
-    });
+    }, user.uid);
 
     // Cleanup subscription on unmount
     return () => unsubscribe();
-  }, []);
+  }, [user]);
 
   const addHabit = async () => {
     if (newHabitName.trim() === '') {
@@ -40,6 +44,7 @@ export const HomeScreen: React.FC = () => {
         name: newHabitName.trim(),
         createdAt: new Date(),
         completedDates: [],
+        userId: user!.uid,
       });
       setNewHabitName('');
     } catch (error) {
@@ -84,6 +89,14 @@ export const HomeScreen: React.FC = () => {
     );
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      Alert.alert('Error', 'Failed to logout');
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -94,7 +107,12 @@ export const HomeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Habit Tracker</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Habit Tracker</Text>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutButtonText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
       
       <View style={styles.inputContainer}>
         <TextInput
@@ -131,6 +149,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 40,
+    marginBottom: 20,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -139,8 +164,16 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
-    marginTop: 40,
+  },
+  logoutButton: {
+    backgroundColor: '#ff3b30',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  logoutButtonText: {
+    color: '#fff',
+    fontWeight: '500',
   },
   inputContainer: {
     flexDirection: 'row',
