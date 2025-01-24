@@ -13,6 +13,7 @@ import { Habit } from '../types';
 import { HabitItem } from '../components/HabitItem';
 import { habitService } from '../services/habitService';
 import { useAuth } from '../contexts/AuthContext';
+import { ChatButton } from '../components/ChatButton';
 
 export const HomeScreen: React.FC = () => {
   const { user, logout } = useAuth();
@@ -139,6 +140,8 @@ export const HomeScreen: React.FC = () => {
         )}
         style={styles.list}
       />
+      
+      <ChatButton habits={habits} />
     </View>
   );
 };

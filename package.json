@@ -9,17 +9,21 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "@react-native-firebase/app": "^21.7.1",
     "@react-native-firebase/firestore": "^21.7.1",
     "expo": "~52.0.27",
     "expo-status-bar": "~2.0.1",
     "firebase": "^11.2.0",
     "react": "18.3.1",
-    "react-native": "0.76.6"
+    "react-native": "0.76.6",
+    "react-native-markdown-display": "^7.0.2",
+    "react-native-vector-icons": "^10.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@types/react": "~18.3.12",
+    "@types/react-native-vector-icons": "^6.4.18",
     "typescript": "^5.3.3"
   },
   "private": true
